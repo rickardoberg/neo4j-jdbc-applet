@@ -48,31 +48,86 @@ public class Neo4jApplet
 {
     private Connection conn;
     private Logger logger;
+    private Driver driver;
+    private String url;
 
     //Called when this applet is loaded into the browser.
     public void init()
     {
         //Execute a job on the event-dispatching thread; creating this applet's GUI.
+        url = super.getParameter("url");
         logger = Logger.getLogger(Neo4jApplet.class.getName());
-        logger.info("Starting Neo4j JDBC Applet");
+        logger.info("Initializing Neo4j JDBC Applet");
         try
         {
             Engine.setInstance(new AppletEngine());
 
-            DriverManager.registerDriver(new Driver());
+            driver = new Driver();
+            DriverManager.registerDriver(driver);
             logger.info("Registered Neo4j JDBC Driver");
-
-            String url = super.getParameter("url");
-            logger.info("Connecting to " + url);
-            conn = DriverManager.getConnection(url);
-            logger.info("Connected");
         } catch (Exception e)
         {
             logger.log(Level.SEVERE, "Error:" + e, e);
         }
     }
 
-    public Connection getConn()
+    @Override
+    public void start()
+    {
+        setUrl(url);
+    }
+
+    @Override
+    public void stop()
+    {
+        try
+        {
+            conn.close();
+            logger.info("Closed connection");
+        } catch (SQLException e)
+        {
+            logger.log(Level.SEVERE, "Error:" + e, e);
+        }
+    }
+
+    @Override
+    public void destroy()
+    {
+        try
+        {
+            DriverManager.deregisterDriver(driver);
+        } catch (SQLException e)
+        {
+            logger.log(Level.SEVERE, "Error:" + e, e);
+        }
+    }
+
+    public void setUrl(String url)
+    {
+        this.url = url;
+
+        try
+        {
+            if (conn != null)
+            {
+                conn.close();
+            }
+
+            logger.info("Connecting to " + url);
+            conn = DriverManager.getConnection(url);
+            logger.info("Connected");
+        } catch (SQLException e)
+        {
+            logger.log(Level.SEVERE, "Error:" + e, e);
+        }
+    }
+
+    public String getUrl()
+    {
+        return url;
+    }
+
+    public Connection getConnection()
     {
         return conn;
     }
