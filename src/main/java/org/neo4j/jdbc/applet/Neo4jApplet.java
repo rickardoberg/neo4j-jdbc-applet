@@ -21,22 +21,13 @@
 package org.neo4j.jdbc.applet;
 
 import org.neo4j.jdbc.Driver;
-import org.neo4j.jdbc.ExecutionResult;
-import org.restlet.Client;
-import org.restlet.Context;
-import org.restlet.engine.ConnectorHelper;
-import org.restlet.engine.Edition;
 import org.restlet.engine.Engine;
-import org.restlet.engine.ProtocolHelper;
-import org.restlet.engine.log.LoggerFacade;
 
 import javax.swing.*;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
